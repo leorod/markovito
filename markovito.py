@@ -8,6 +8,8 @@ import json
 import markov_generator
 import group_scraper
 import asyncio
+import logging
+import random
 
 def extract_mention(message):
     mention = list(filter(lambda ent: ent.type == 'mention', message.entities))[0]
@@ -42,12 +44,23 @@ def handle(bot, update):
     except Exception as e:
         print(e)
 
+def random_fact(bot, update):
+    try:
+        response = requests.get('http://mentalfloss.com/api/facts?page=' + str(random.randint(0, 10)) + '&limit=1')
+        facts = list(map(lambda x: x['fact'], response.json()))
+        message = markov_generator.generate_from_iterable(facts)
+        bot.send_message(chat_id=update.message.chat_id, text=message)
+    except Exception as e:
+        print(e)
+        bot.send_message(chat_id=update.message.chat_id, text=str(e))
+
 def main():
     try:
         with open('config/bot.json', 'r') as f:
             updater = Updater(json.load(f)['token'])
         dp = updater.dispatcher
-        dp.add_handler(CommandHandler('quediria',handle))
+        dp.add_handler(CommandHandler('quediria', handle))
+        dp.add_handler(CommandHandler('randomfact', random_fact))
         updater.start_polling()
         updater.idle()
     except Exception as e:
