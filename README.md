@@ -7,9 +7,7 @@ Powered by Markovify (https://github.com/jsvine/markovify), Telethon (https://gi
 ## Starting up
 In order to run the service, first install all three dependencies:
 ```
-pip3 install markovify
-pip3 install telethon
-pip3 install python-telegram-bot
+pip3 install -r requirements.txt
 ```
 
-Then simply run `python3 markovito.py` to start the bot up.
+Then simply run `python3 -m markovito` to start the bot up.

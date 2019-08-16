@@ -1,0 +1,3 @@
+markovify
+telethon
+python-telegram-bot
