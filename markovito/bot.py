@@ -1,5 +1,7 @@
 from telegram.ext import Updater, CommandHandler
 import json
+import logging
+log = logging.getLogger(__name__)
 
 class Bot:
     def __init__(self, token, handlers):
@@ -10,5 +12,6 @@ class Bot:
         self.updater = updater
     
     def start(self):
+        log.info("Listening...")
         self.updater.start_polling()
         self.updater.idle()

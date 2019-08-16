@@ -20,20 +20,11 @@ class QueDiriaHandler(Handler):
         else:
             return await get_user_id(self.extract_mention(message))
     
-    async def build_message(self, bot, update):
-        try:
-            chat_id = str(update.message.chat.id).replace('-', '')
-            user_id = await self.get_mentioned_user(update.message)
-            message = generate_message(chat_id + '/' + str(user_id))
-            bot.send_message(chat_id=update.message.chat_id, text=message)
-        except FileNotFoundError as e:
-            bot.send_message(chat_id=update.message.chat_id, text="Something went wrong. Couldn't load dataset.")
-        except Exception as e:
-            bot.send_message(chat_id=update.message.chat_id, text=str(e))
+    async def build_message(self, update):
+        chat_id = str(update.message.chat.id).replace('-', '')
+        user_id = await self.get_mentioned_user(update.message)
+        return generate_message(chat_id + '/' + str(user_id))
     
-    def handle(self, bot, update):
-        try:
-            loop = asyncio.new_event_loop()
-            loop.run_until_complete(self.build_message(bot, update))
-        except Exception as e:
-            bot.send_message(chat_id=update.message.chat_id, text=str(e))
+    def get_message(self, bot, update):
+        loop = asyncio.new_event_loop()
+        return loop.run_until_complete(self.build_message(update))
