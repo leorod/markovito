@@ -9,10 +9,10 @@ class TelegramScraper:
         self.config = config
     
     async def get_user_id(self, username):
-        async with TelegramClient(config['session_name'], config['api_id'], config['api_hash'], loop=asyncio.get_event_loop()) as client:
+        async with TelegramClient(self.config['session_name'], self.config['api_id'], self.config['api_hash'], loop=asyncio.get_event_loop()) as client:
             await client.connect()
             if not await client.is_user_authorized():
-                client.send_code_request(config['phone'])
-                client.sign_in(config["phone"], input('Enter the code: '))
+                client.send_code_request(self.config['phone'])
+                client.sign_in(self.config["phone"], input('Enter the code: '))
             response = await client.get_entity(username)
             return response.id
