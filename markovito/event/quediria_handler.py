@@ -1,12 +1,12 @@
 from .handler import Handler
 from ..data.markov_generator import generate_message
-from ..data.group_scraper import get_user_id
+from ..data.telegram_scraper import TelegramScraper
 import asyncio
 import re
 
 class QueDiriaHandler(Handler):
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        self.telegram_scraper = TelegramScraper(config)
     
     def extract_mention(self, message):
         mention = list(filter(lambda ent: ent.type == 'mention', message.entities))[0]
@@ -18,7 +18,7 @@ class QueDiriaHandler(Handler):
         if len(mentions) > 0:
             return mentions[0].user.id
         else:
-            return await get_user_id(self.extract_mention(message))
+            return await self.telegram_scraper.get_user_id(self.extract_mention(message))
     
     async def build_message(self, update):
         chat_id = str(update.message.chat.id).replace('-', '')

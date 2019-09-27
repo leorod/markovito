@@ -12,14 +12,14 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 def get_config():
-    json.loads(input('Config: '))
+    return json.loads(input('Config: '))
 
 if __name__ == "__main__":
     log.info("Starting up...")
     config = get_config()
     handlers = {
         "randomfact": RandomFactHandler(),
-        "quediria": QueDiriaHandler()
+        "quediria": QueDiriaHandler(config)
     }
     bot = Bot(config["bot_token"], handlers)
     bot.start()
