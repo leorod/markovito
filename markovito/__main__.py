@@ -12,8 +12,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 def get_config():
-    with open('config/config.json', 'r') as f:
-        return json.load(f)
+    json.loads(input('Config: '))
 
 if __name__ == "__main__":
     log.info("Starting up...")
