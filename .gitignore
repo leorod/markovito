@@ -8,6 +8,8 @@ dataset/
 config/
 *.session
 *.session-journal
+refs.db
+result.json
 
 # C extensions
 *.so
@@ -108,3 +110,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
