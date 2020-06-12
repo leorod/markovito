@@ -30,6 +30,9 @@ class ChatResolver:
     def __init__(self):
         self.ref_cache = {}
         self.all_refs = fetch_refs()
+        for ref in self.all_refs:
+            if ref['bot_id']:
+                self.ref_cache[ref['bot_id']] = ref['source_id']
     
     def get_chat_id(self, bot_id, chat_name):
         if bot_id in self.ref_cache:
