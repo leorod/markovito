@@ -8,7 +8,7 @@ import sys
 logging.basicConfig(
     stream=sys.stdout,
     format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
-    level=logging.INFO)
+    level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 def get_config():

@@ -1,30 +1,32 @@
 from .handler import Handler
 from ..data.markov_generator import generate_message
-from ..data.group_scraper import get_user_id
+from ..data.user_resolver import UserResolver
+from ..data.chat_resolver import ChatResolver
 import asyncio
 import re
 
 class QueDiriaHandler(Handler):
     def __init__(self):
-        pass
+        self.user_resolver = UserResolver(asyncio.new_event_loop())
+        self.chat_resolver = ChatResolver()
     
     def extract_mention(self, message):
         mention = list(filter(lambda ent: ent.type == 'mention', message.entities))[0]
         text = message.text[mention.offset:mention.offset + mention.length]
         return re.sub('^@', '', text)
 
-    async def get_mentioned_user(self, message):
+    def get_mentioned_user(self, message):
         mentions = list(filter(lambda ent: ent.type == 'text_mention', message.entities))
         if len(mentions) > 0:
             return mentions[0].user.id
         else:
-            return await get_user_id(self.extract_mention(message))
+            return self.user_resolver.get_user_id(self.extract_mention(message))
     
-    async def build_message(self, update):
-        chat_id = str(update.message.chat.id).replace('-', '')
-        user_id = await self.get_mentioned_user(update.message)
-        return generate_message(chat_id + '/' + str(user_id))
+    def build_message(self, update):
+        chat_id = self.chat_resolver.get_chat_id(update.message.chat.id, update.message.chat.title)
+        user_id = self.get_mentioned_user(update.message)
+        print('chataidi', chat_id)
+        return generate_message(str(chat_id) + '/' + str(user_id))
     
     def get_message(self, bot, update):
-        loop = asyncio.new_event_loop()
-        return loop.run_until_complete(self.build_message(update))
+        return self.build_message(update)
